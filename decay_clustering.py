@@ -4,6 +4,7 @@ Program to perform a clustering analysis on magnetic-field decay data from solar
 each catalog contains 150 temporal points of magnetic-field decay around a flare time
 This code uses the scikit-learn Python module
 Two clustering algorithms are run: k-means and DBScan
+Results are published in Sun, X. et al. (2015)
 '''
 
 import time, numpy as np, matplotlib.pyplot as plt, sys, getopt
