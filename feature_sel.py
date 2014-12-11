@@ -43,15 +43,15 @@ def SU(X,Y):
 #-----------------------------------------------------------------------------------------------
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:],"hc:e:l:",["choice=","elements=","levels="]) #h is for help, c is for choice
+    opts, args = getopt.getopt(sys.argv[1:],"hc:e:l:",["help","choice=","elements=","levels="]) #h is for help, c is for choice
 except getopt.GetoptError:
     print 'wrong or missing argument:'
     print 'feature_sel.py -c <choice> -e <elements> -l <levels>'
     sys.exit(2)
 
-if len(opts) != 0:    
+if len(opts) >= 3:    
     for opt, arg in opts:
-        if opt == '-h':
+        if opt in ("-h", "--help"):
             print 'feature_sel.py -c <choice> -e <elements> -l <levels>'
             sys.exit()
         elif opt in ("-c", "--choice"):
@@ -381,6 +381,7 @@ if choice == 5:
   
   print 'Symmetrical uncertainty:'
   print SUsorted
+  print symmetricalun
 
 '''
   selectedfeature=[]
