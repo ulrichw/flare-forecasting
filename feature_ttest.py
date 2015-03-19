@@ -2,6 +2,7 @@
 Because the sample size is larger than 300, the distribution of the sample mean
 can be assumed normal (central limit theorem).
 The distribution of the population itself does not need to be normal.
+We run a Shapiro-Wilks test to measure normality.
 '''
 
 import numpy as np
@@ -89,6 +90,8 @@ def main():
             print "the p-value is lower than the significance level, therefore the null hypothesis can be rejected"
         else:
             print "the p-value is larger than the significance level, therefore the null hypothesis cannot be rejected"
+        print "Shapiro-Wilks test p-values:",stats.shapiro(Xflare[:,i])[1],stats.shapiro(Xnoflare[:,i])[1]
+        print "\n"
 
 if __name__ == '__main__':
 
