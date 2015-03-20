@@ -1,5 +1,5 @@
 '''
-Program to compute the Pearson correlation coefficient and R squared
+Program to compute the correlation coefficients (Pearson and Spearman) and R squared
 between two active-region features or for all possible combinations
 of features
 '''
@@ -127,27 +127,36 @@ def main():
 
     if (feature1 != -1 and feature2 != -1):
 
-        #compute Pearson correlation coefficient and p-value for testing non-correlation
+        #compute correlation coefficients and p-value for testing non-correlation
         #p-value indicates the probability of an uncorrelated system producing datasets that have a correlation at least
         #as extreme as the one computed from these datasets
-        (corr,pvalue) = stats.pearsonr(Xflare[:,feature1],Xflare[:,feature2])
+        (corr,pvalue) = stats.pearsonr(Xflare[:,feature1],Xflare[:,feature2]) #Pearson correlation coefficient
+        (rho,pvalue2) = stats.spearmanr(Xflare[:,feature1],Xflare[:,feature2]) #Spearman coefficient
         print "Results for features:",names[feature1],"and",names[feature2]
         print "Pearson correlation = ",corr
-        print "P-value = ",pvalue
+        print "Spearman correlation = ",rho
+        print "P-values for Pearson and Spearman = ",pvalue,pvalue2
         print "R squared = ",corr**2 #ratio of explained variance to total variance
 
     else:
         iterable=range(N)
         correlations=[]
+        spearman=[]
         comb=combinations(iterable,2)
         for i in comb:
             (corr,pvalue) = stats.pearsonr(Xflare[:,i[0]],Xflare[:,i[1]])
             correlations.append(corr)
+            (rho,pvalue2) = stats.spearmanr(Xflare[:,i[0]],Xflare[:,i[1]])
+            spearman.append(rho)
 
-        #sorting the correlations
+        #sorting the Pearson correlations
         correlations=np.array(correlations)
         comb=np.array(comb)
         indices=sorted(range(len(comb)),key=lambda k: correlations[k],reverse=True) #indices of the sorted correlations
+
+        #sorting the Spearman correlations
+        spearman=np.array(spearman)
+        indices2=sorted(range(len(comb)),key=lambda k: spearman[k],reverse=True) #indices of the sorted correlations
 
         #show the result as a nice plot!
         #we only display the 20 highest correlations
@@ -159,6 +168,13 @@ def main():
         plt.xticks(range(len(comb[indices[0:20]])),comb[indices[0:20]])
         plt.show()
 
+        plt.clf()
+        plt.xlabel('Pairs')
+        plt.ylabel('Spearman correlation')
+        plt.title("20 highest correlations")
+        plt.plot(spearman[indices2[0:20]],color='r',linestyle='-')
+        plt.xticks(range(len(comb[indices2[0:20]])),comb[indices2[0:20]])
+        plt.show()
 
 if __name__ == "__main__":
     main()
