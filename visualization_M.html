@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<!-- small script to generate plots of the line-of-sight magnetic field at the photosphere -->
+<!-- uses the d3.js and c3.js libraries -->
+<html lang = "en">
+	<head>
+		<meta charset="utf-8">
+		<link href="c3/c3.css" rel="stylesheet" type="text/css">
+		<title>Magnetic Field At The Surface of the Sun</title>
+		<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+		<script src="c3/c3.min.js"></script>
+		<style type="text/css">
+
+		body{
+			margin: 0 auto;
+			font-family: Georgia;
+			color: #000000;
+			line-height: 1.15;
+			max-width: 1050px;
+			font-size: 20px;
+			background: #f5f4f0;
+			}
+
+		  .axis path,
+		  .axis line {
+		      fill: none;
+		      stroke: gray;
+		      stroke-width: 2;
+		      shape-rendering: crispEdges;
+		   }
+		  
+		  .axis text {
+		      font-family: Georgia;
+		      font-size: 20px;
+		      fill: gray;
+		  }
+
+		</style>
+	<head>
+	<body>
+		    
+		<h1><font color="#6495ED"> Magnetic Field At The Surface of the Sun </font></h1>
+		<p>
+			The Helioseismic and Magnetic Imager (HMI) onboard the Solar Dynamics Observatory (SDO) produces, amongst others, magnetic field maps of the solar surface.  
+Here we show some of the quantities computed for January 1, 2015. The data are provided by JSOC and the plots made with <a href="http://c3js.org/" target="_blank">C3.js</a> and <a href="http://d3js.org/" target="_blank">D3.js</a>. 
+		</p>
+
+		<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+
+<!-- page format-->	
+		
+		<table>
+			<tr>
+				<td>
+					<h3>Mean Magnetic Field on 2015/01/01</h3>
+				</td>	
+				<td>
+					<h3>RMS Variation of the Magnetic Field on 2015/01/01</h3>
+				</td>	
+			</tr>
+			<tr>
+				<td width="750px;" height="500px;">
+					<div id="DATAMEAN_20150101"></div>
+				</td >
+				<td width="750px;" height="500px;">
+					<div id="DATARMS_20150101"></div>
+				</td>
+
+			</tr>						
+			<tr>
+				<td>
+					<h3>Skewness of the distribution of Magnetic Field on 2015/01/01</h3>
+				</td>	
+				<td>
+					<h3>Kurtosis of the distribution of Magnetic Field on 2015/01/01</h3>
+				</td>	
+			</tr>
+			<tr>
+				<td width="750px;" height="500px;">
+					<div id="DATASKEW_20150101"></div>
+				</td >
+				<td width="750px;" height="500px;">
+					<div id="DATAKURT_20150101"></div>
+				</td>
+
+			</tr>					
+
+		</table>
+		
+		
+<!-- c3 tables -->	
+		<script type="text/javascript">
+	
+	        <!-- Load JSON data -->
+		d3.json("20150101_M_45s.json", function(error, data) {
+			t_rec = data.keywords[0].values;
+			t_rec.unshift('x');
+			data1 = data.keywords[1].values;
+			data1.unshift('DATAMEAN');
+			data2 = data.keywords[2].values;
+			data2.unshift('DATARMS');
+			data3 = data.keywords[3].values;
+			data3.unshift('DATASKEW');
+			data4 = data.keywords[4].values;
+			data4.unshift('DATAKURT');
+
+			var DATAMEAN = c3.generate({
+			    bindto: '#DATAMEAN_20150101',
+			    padding: {
+				top: 10,
+				right: 20,
+				bottom: 10,
+				left: 60
+			    },
+			    size: {
+				height: 400,
+				width: 650
+			    },
+			    data: {
+				x: 'x',
+				xFormat: '%Y.%m.%d_%H:%M:%S_TAI',
+				columns: [
+				    t_rec, data1
+				],
+				axes: {
+				    DATAMEAN: 'y'
+				},
+				colors: {
+				    DATAMEAN: '#6495ED'
+				}
+			    },
+			    legend: {
+				position: 'inset'
+			    },
+			    point: {
+				show: true
+			    },
+			    axis: {
+				x: {
+				    type: 'timeseries',
+				    tick: {
+					count: 25,
+					format: "%H:%M"					
+				    },
+				    label: "Time (TAI)"
+				},				
+				y: {
+				     show: true,
+				     tick: {
+					format: d3.format("g")
+				     },
+				     label: "DATAMEAN (Gauss)"
+				},			
+			    },
+			    grid: {
+			      x:  {
+			          show: true
+				  },
+			      y:  {
+			          show: true
+				  }
+				  }
+			});
+
+
+			var DATARMS = c3.generate({
+			    bindto: '#DATARMS_20150101',
+			    padding: {
+				top: 10,
+				right: 20,
+				bottom: 10,
+				left: 60
+			    },
+			    size: {
+				height: 400,
+				width: 650
+			    },
+			    data: {
+				x: 'x',
+				xFormat: '%Y.%m.%d_%H:%M:%S_TAI',
+				columns: [
+				    t_rec, data2
+				],
+				axes: {
+				    DATARMS: 'y'
+				},
+				colors: {
+				    DATARMS: d3.rgb('green')
+				},
+				color: function (color, d) {
+				    return d.id && d.id === 'data2' ? d3.rgb(color).darker(d.value / 150) : color;
+				}
+			    },
+			    legend: {
+				position: 'inset'
+			    },
+			    point: {
+				show: false
+			    },
+			    axis: {
+				x: {
+				    type: 'timeseries',
+				    tick: {
+					count: 25,					
+					format: '%H:%M'
+				    },
+				    label: "Time (TAI)"
+				},			
+				y: {
+				     show: true,
+				     tick: {
+					format: d3.format("e")
+				     },
+				     label: "DATARMS (Gauss)"
+				}
+			    },
+			    grid: {
+			      x:  {
+			          show: true
+				  },
+			      y:  {
+			          show: true
+				  }
+				  }
+			});
+
+
+			var DATASKEW = c3.generate({
+			    bindto: '#DATASKEW_20150101',
+			    padding: {
+				top: 10,
+				right: 20,
+				bottom: 10,
+				left: 60
+			    },
+			    size: {
+				height: 400,
+				width: 650
+			    },
+			    data: {
+				x: 'x',
+				xFormat: '%Y.%m.%d_%H:%M:%S_TAI',
+				columns: [
+				    t_rec, data3
+				],
+				axes: {
+				    DATASKEW: 'y'
+				},
+				colors: {
+				    DATASKEW: d3.rgb('red')
+				},
+				color: function (color, d) {
+				    return d.id && d.id === 'data2' ? d3.rgb(color).darker(d.value / 150) : color;
+				}				
+			    },
+			    legend: {
+				position: 'inset'
+			    },
+			    point: {
+				show: false
+			    },
+			    axis: {
+				x: {
+				    type: 'timeseries',
+				    tick: {
+					count: 25,					
+					format: '%H:%M'
+				    },
+				    label: "Time (TAI)"
+				},			
+				y: {
+				     show: true,
+				     tick: {
+					format: d3.format("g")
+				     },
+				     label: "DATASKEW (Gauss)",
+				     min: 3.0
+				}
+			    },
+			    grid: {
+			      x:  {
+			          show: true
+				  },
+			      y:  {
+			          show: true
+				  }
+				  }
+			});
+
+
+			var DATAKURT = c3.generate({
+			    bindto: '#DATAKURT_20150101',
+			    padding: {
+				top: 10,
+				right: 20,
+				bottom: 10,
+				left: 60
+			    },
+			    size: {
+				height: 400,
+				width: 650
+			    },
+			    data: {
+				x: 'x',
+				xFormat: '%Y.%m.%d_%H:%M:%S_TAI',
+				columns: [
+				    t_rec, data4
+				],
+				axes: {
+				    DATAKURT: 'y'
+				},
+				colors: {
+				    DATAKURT: d3.rgb('yellow').darker()
+				},
+				color: function (color, d) {
+				    return d.id && d.id === 'data2' ? d3.rgb(color).darker(d.value / 150) : color;
+				}				
+			    },
+			    legend: {
+				position: 'inset'
+			    },
+			    point: {
+				show: false
+			    },
+			    axis: {
+				x: {
+				    type: 'timeseries',
+				    tick: {
+					count: 25,					
+					format: '%H:%M'
+				    },
+				    label: "Time (TAI)"
+				},				
+				y: {
+				     show: true,
+				     tick: {
+					format: d3.format("e")
+				     },
+				     label: "DATAKURT (Gauss)",
+				     max: 320
+				}
+			    },
+			    grid: {
+			      x:  {
+			          show: true
+				  },
+			      y:  {
+			          show: true
+				  }
+				  }
+			});
+			
+		});
+
+
+		</script>
+
+	</body>
+</html>
